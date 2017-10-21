@@ -12,17 +12,12 @@ import nz.govt.msd.driver.web.ChainExpectedConditions;
 import nz.govt.msd.driver.web.PageHelper;
 
 public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
-	public FXTravelMigrantPage(BrowserBasedTest test) {
-		//super(test, AppConfig.getInstance().getPropertyAsInteger("webdriver.defaultTimeout", "5"));
-		super(test);
-		// refreshPageElements();
-	}
-	
+
 	private static final String TITLE = "Currency converter";
-	
+
 	@FindBy(css = "#main")
 	WebElement currentPage;
-	
+
 	@FindBy(id = "ConvertFrom")
 	WebElement convertFrom;
 
@@ -35,10 +30,19 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 	@FindBy(id = "convert")
 	WebElement convert;
 
+	@FindBy(css = "#resultsdiv > em")
+	WebElement message;
+
+	public FXTravelMigrantPage(BrowserBasedTest test) {
+		// super(test,
+		// AppConfig.getInstance().getPropertyAsInteger("webdriver.defaultTimeout",
+		// "5"));
+		super(test);
+	}
+
 	@Override
 	public ExpectedCondition<?> pageIsLoaded(Object... params) {
-		return ChainExpectedConditions
-				.with(ExpectedConditions.textToBePresentInElement(currentPage, TITLE))
+		return ChainExpectedConditions.with(ExpectedConditions.textToBePresentInElement(currentPage, TITLE))
 				.and(ExpectedConditions.frameToBeAvailableAndSwitchToIt("westpac-iframe"));
 	}
 
@@ -49,37 +53,28 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 	}
 
 	public String convertCurreny(String fromCurrency, String money, String toCurrency) {
-		//switch to the iframe
-		String iframe = getCurrentFrameNameOrId();
-		
-		if (!PageHelper.getCurrentFrameNameOrId(getBrowser().getDriver()).equalsIgnoreCase("westpac-iframe")) {
-			getBrowser().getDriver().switchTo().frame("westpac-iframe");		
+		// switch to the iframe
+		String iframe = "westpac-iframe";
+
+		if (!PageHelper.getCurrentFrameNameOrId(getBrowser().getDriver()).equalsIgnoreCase(iframe)) {
+			getBrowser().getDriver().switchTo().frame(iframe);
 		}
 
 		convertFrom.sendKeys(fromCurrency);
 		amount.sendKeys(money);
 		convertTo.sendKeys(toCurrency);
-		capturePageAndClick(convert, FXTravelMigrantPage.class);
 
-		return null;
+		capturePageAndSubmit(convert, FXTravelMigrantPage.class);
+		convert.click();
+
+		capturePage("Currency Converter");
+
+		if (message.getText().contains("100 New Zealand Dollar")) {
+			return "displayed correctly";
+		}
+
+		return message.getText();
+
 	}
-
-	// @Override
-	// public void refreshPageElements() {
-	// // PageFactory.initElements(
-	// // new PageObjectAwareHtmlElementDecorator(new
-	// // HtmlElementLocatorFactory(getBrowser().getDriver()), this),
-	// // this);
-	//
-	// PageFactory.initElements(new HtmlElementDecorator(new
-	// HtmlElementLocatorFactory(getBrowser().getDriver())),
-	// this);
-	//
-	// // PageFactory.initElements(new
-	// CustomElementDecorator(getBrowser().getDriver(),
-	// // getTest()), this);
-	//
-	// // System.out.println("Not implemented..");
-	// }
 
 }
