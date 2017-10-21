@@ -8,6 +8,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import nz.govt.msd.AppConfig;
 import nz.govt.msd.driver.BrowserBasedTest;
 import nz.govt.msd.driver.ui.PageObject;
+import nz.govt.msd.driver.web.ChainExpectedConditions;
+import nz.govt.msd.driver.web.PageHelper;
 
 public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 	public FXTravelMigrantPage(BrowserBasedTest test) {
@@ -15,7 +17,12 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 		super(test);
 		// refreshPageElements();
 	}
-
+	
+	private static final String TITLE = "Currency converter";
+	
+	@FindBy(css = "#main")
+	WebElement currentPage;
+	
 	@FindBy(id = "ConvertFrom")
 	WebElement convertFrom;
 
@@ -30,7 +37,9 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 
 	@Override
 	public ExpectedCondition<?> pageIsLoaded(Object... params) {
-		return ExpectedConditions.visibilityOf(convert);
+		return ChainExpectedConditions
+				.with(ExpectedConditions.textToBePresentInElement(currentPage, TITLE))
+				.and(ExpectedConditions.frameToBeAvailableAndSwitchToIt("westpac-iframe"));
 	}
 
 	public static FXTravelMigrantPage open(BrowserBasedTest test) {
@@ -40,9 +49,12 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 	}
 
 	public String convertCurreny(String fromCurrency, String money, String toCurrency) {
-		// String fromCurrency = "New Zealand Dollar";
-		// String money = "100";
-		// String toCurrency = "United States Dollar";
+		//switch to the iframe
+		String iframe = getCurrentFrameNameOrId();
+		
+		if (!PageHelper.getCurrentFrameNameOrId(getBrowser().getDriver()).equalsIgnoreCase("westpac-iframe")) {
+			getBrowser().getDriver().switchTo().frame("westpac-iframe");		
+		}
 
 		convertFrom.sendKeys(fromCurrency);
 		amount.sendKeys(money);
