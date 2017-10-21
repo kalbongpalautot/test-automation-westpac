@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
+import nz.govt.msd.driver.workflow.Workflow;
 import nz.govt.msd.utils.data.DataCleanupHelper;
 
 /**
@@ -53,6 +54,8 @@ public abstract class ConcordionFixture extends ConcordionBase {
 			return new DataCleanupHelper();
 		}
 	};
+	
+private Workflow workflow;
 
 	/**
 	 * Gets the logger for the current test.
@@ -122,5 +125,16 @@ public abstract class ConcordionFixture extends ConcordionBase {
 		// Logging at debug level means the message won't make it to the console, but will make
 		// it to the logs (based on included logback configuration files)
 		tooltipLogger.debug(message);
+	}
+	
+	/**
+	 * @return An object that performs common tasks against the system under test
+	 */
+	public Workflow workflow() {
+		if (workflow == null) {
+			workflow = new Workflow(this);
+		}
+
+		return workflow;
 	}
 }

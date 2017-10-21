@@ -11,6 +11,7 @@ public class AppConfig extends Config {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
 	private static String googleUrl;
+	private static String westpacUrl;
 
 	static {
 		synchronized (AppConfig.class) {
@@ -34,12 +35,18 @@ public class AppConfig extends Config {
 		Properties prop = loadFile(CONFIG_FILE);
 
 		googleUrl = getProperty(prop, "googleUrl");
+		westpacUrl = getProperty(prop, "westpacUrl");
 	}
 
 	// Application specific properties
 	public static String getGoogleUrl() {
 		return googleUrl;
 	}
+
+	// Application specific properties
+		public static String getWestpacUrl() {
+			return westpacUrl;
+		}
 
 	public static String getDatabaseUrl() {
 		throw new RuntimeException("Not imeplemented");

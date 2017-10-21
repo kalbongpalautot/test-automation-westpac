@@ -2,8 +2,6 @@ package nz.govt.msd.specification.demo;
 
 import java.io.IOException;
 
-import org.concordion.slf4j.ext.ReportLoggerFactory;
-
 import nz.govt.msd.driver.service.YahooWeather;
 import nz.govt.msd.driver.ui.GoogleResultsPage;
 import nz.govt.msd.driver.ui.GoogleSearchPage;
