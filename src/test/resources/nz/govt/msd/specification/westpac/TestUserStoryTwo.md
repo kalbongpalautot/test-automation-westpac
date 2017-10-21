@@ -1,4 +1,4 @@
-# Currency Conversion  
+# Test User Story 2 
 As a Product Owner  
 I want the feature to Convert Currency A to a Currency B and vice versa with the currency converter  
 So that The user gets an indication of the exchange rates and makes an informed decision on their foreign transactions  
@@ -29,9 +29,3 @@ Then I can see the conversion details as per below table
 [To Currency]: - "#to"
 [convertCurrency]: - "#result = convertCurrency(#from, #amount, #to)"
 [Result]: - "?=#result"
-
-
-<!--
-
-
--->

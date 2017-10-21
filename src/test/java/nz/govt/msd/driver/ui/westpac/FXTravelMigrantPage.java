@@ -1,8 +1,5 @@
 package nz.govt.msd.driver.ui.westpac;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -36,6 +33,9 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 	@FindBy(css = "#resultsdiv > em")
 	WebElement message;
 
+	@FindBy(css = "#errordiv")
+	WebElement errorMessage;
+
 	public FXTravelMigrantPage(BrowserBasedTest test) {
 		// super(test,
 		// AppConfig.getInstance().getPropertyAsInteger("webdriver.defaultTimeout",
@@ -55,10 +55,10 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 		return new FXTravelMigrantPage(test);
 	}
 
-	public String convertCurreny(String fromCurrency, String money, String toCurrency) {
-		// switch to the iframe
+	public FXTravelMigrantPage convertCurreny(String fromCurrency, String money, String toCurrency) {
 		String iframe = "westpac-iframe";
 
+		// switch to the iframe
 		if (!PageHelper.getCurrentFrameNameOrId(getBrowser().getDriver()).equalsIgnoreCase(iframe)) {
 			getBrowser().getDriver().switchTo().frame(iframe);
 		}
@@ -67,31 +67,17 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 		amount.sendKeys(money);
 		convertTo.sendKeys(toCurrency);
 
-		capturePageAndSubmit(convert, FXTravelMigrantPage.class);
+		return capturePageAndSubmit(convert, FXTravelMigrantPage.class);
+	}
 
+	public String getMessage() {
 		capturePage(message, "Currency Converter");
-
-		String token = fromCurrency.equals("New Zealand Dollar")
-				? money + " " + fromCurrency + " @ .* = .* " + toCurrency
-				: money + " " + fromCurrency + " .*";
-
-		// String token = money + " " + fromCurrency + " @ .* = .* " + toCurrency;
-
-		if (checkIfMessageMatches(token)) {
-			return "Passed";
-		}
-
 		return message.getText();
 	}
 
-	private boolean checkIfMessageMatches(String token) {
-		Pattern p = Pattern.compile(token);
-		Matcher m = p.matcher(message.getText());
-		if (m.find()) {
-			return true;
-		}
-
-		return false;
+	public String getErrorMessage() {
+		capturePage(errorMessage);
+		return errorMessage.getText();
 	}
 
 }
