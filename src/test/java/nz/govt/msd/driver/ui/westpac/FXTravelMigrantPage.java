@@ -1,5 +1,8 @@
 package nz.govt.msd.driver.ui.westpac;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -65,16 +68,30 @@ public class FXTravelMigrantPage extends PageObject<FXTravelMigrantPage> {
 		convertTo.sendKeys(toCurrency);
 
 		capturePageAndSubmit(convert, FXTravelMigrantPage.class);
-		convert.click();
 
-		capturePage("Currency Converter");
+		capturePage(message, "Currency Converter");
 
-		if (message.getText().contains("100 New Zealand Dollar")) {
-			return "displayed correctly";
+		String token = fromCurrency.equals("New Zealand Dollar")
+				? money + " " + fromCurrency + " @ .* = .* " + toCurrency
+				: money + " " + fromCurrency + " .*";
+
+		// String token = money + " " + fromCurrency + " @ .* = .* " + toCurrency;
+
+		if (checkIfMessageMatches(token)) {
+			return "Passed";
 		}
 
 		return message.getText();
+	}
 
+	private boolean checkIfMessageMatches(String token) {
+		Pattern p = Pattern.compile(token);
+		Matcher m = p.matcher(message.getText());
+		if (m.find()) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
