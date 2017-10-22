@@ -1,3 +1,3 @@
-# Demo Specification
+# Specification
 
-* [Demo](demo/Demo.md "c:run")
+* [Currency Conversion](exam/Westpac.md "c:run")
